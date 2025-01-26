@@ -127,7 +127,7 @@ for r in range(1):
 qc.barrier()
 logical_x(qc)  # chain from top to bottom across col=1
 qc.barrier()
-logical_z(qc)  # chain from left to right across row=1
+#logical_z(qc)  # chain from left to right across row=1
 qc.barrier()
 
 cbit_offset = measure_stabilizers_one_round(qc, 2, cbit_offset=cbit_offset)
@@ -143,7 +143,7 @@ qc.draw('mpl')
 plt.show()
 
 noiseModel = NoiseModel()
-noiseModel.add_all_qubit_quantum_error(depolarizing_error(0.05, 1), ['x'])
+# noiseModel.add_all_qubit_quantum_error(depolarizing_error(0.05, 1), ['x'])
 # noiseModel.add_all_qubit_quantum_error(depolarizing_error(0.05, 1), ['h','x', 'z', 'reset'])
 # noiseModel.add_all_qubit_quantum_error(depolarizing_error(0.05, 2), ['cx'])
 # noiseModel.add_all_qubit_quantum_error(depolarizing_error(0.05, 1), ['measure'])
