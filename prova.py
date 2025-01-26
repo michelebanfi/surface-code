@@ -8,7 +8,9 @@ from qiskit_aer.noise import NoiseModel, depolarizing_error
 ##############################################################################
 # 1) Define layout (indices of data vs ancilla qubits)
 ##############################################################################
-data_qubits = list(range(9))              # q0..q8 are data qubits
+grid = 3
+
+data_qubits = list(range(grid**2))              # q0..q8 are data qubits
 ancilla_qubits = list(range(9, 13))       # q9..q12 are ancillas
 
 # For convenience, define which data qubits belong to which plaquette:
@@ -128,7 +130,7 @@ qc.barrier()
 logical_z(qc)  # chain from left to right across row=1
 qc.barrier()
 
-cbit_offset = measure_stabilizers_one_round(qc, 99, cbit_offset=cbit_offset)
+cbit_offset = measure_stabilizers_one_round(qc, 2, cbit_offset=cbit_offset)
 
 # 4.4. Finally, measure all data qubits in Z basis to see the result
 for i, dq in enumerate(data_qubits):
@@ -142,6 +144,9 @@ plt.show()
 
 noiseModel = NoiseModel()
 noiseModel.add_all_qubit_quantum_error(depolarizing_error(0.05, 1), ['x'])
+# noiseModel.add_all_qubit_quantum_error(depolarizing_error(0.05, 1), ['h','x', 'z', 'reset'])
+# noiseModel.add_all_qubit_quantum_error(depolarizing_error(0.05, 2), ['cx'])
+# noiseModel.add_all_qubit_quantum_error(depolarizing_error(0.05, 1), ['measure'])
 
 simulator = AerSimulator(noise_model=noiseModel)
 compiled_circuit = transpile(qc, simulator)
@@ -153,11 +158,15 @@ print(counts)
 
 # extract the logical measurement results
 logical_results = {}
+error_results = {}
 for output in counts:
     logical_outcome = output[:num_stabilizer_cbits]
+    error_outcome = output[num_stabilizer_cbits:]
     logical_results[logical_outcome] = counts[output]
+    error_results[error_outcome] = counts[output]
 
 print("Measurement outcomes:", logical_results)
+print("Error outcomes:", error_results)
 
 plot_histogram(counts)
 plt.show()
