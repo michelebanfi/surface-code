@@ -5,17 +5,18 @@ import matplotlib.pyplot as plt
 from utils import apply_stabilizers, logical_x, mwpm_decoder, run_on_ibm, run_on_simulator
 
 API_KEY = "039fcc48a1c2eae0fa22fe7857e5a02ed89cd782d5738fac3bbd97d8f6e0506b330bd51db32ed92ca4a07490141cc7c3dfade0618db865772491155d7b4f2192"
-SIMULATION = True
+SIMULATION = False
 
-grid = 3
+grid = 5
 n_rounds = 2
 
-n_data = (grid ** 2)//2 + 1
+if grid % 2 != 1:
+    raise ValueError("Grid size must be an odd number")
 
+n_data = (grid ** 2)//2 + 1
 n_syndrome = (grid ** 2) - n_data
 
 data_qubits = list(range(grid**2))
-ancilla_qubits = list(range(9, 13))
 
 qc = QuantumCircuit(n_data + n_syndrome, n_syndrome * n_rounds)
 
@@ -33,11 +34,16 @@ classical_bits = 0
 classical_bits, stabilizer_map = apply_stabilizers(qc, grid, classical_bits, stabilizer_map)
 
 qc.barrier()
-logical_x(qc)
+logical_x(grid, qc)
 qc.barrier()
 
 classical_bits, stabilizer_map = apply_stabilizers(qc, grid, classical_bits, stabilizer_map)
 qc.measure_all()
+
+# plot the circuit
+qc.draw('mpl')
+plt.show()
+plt.close()
 
 # iterate through the stabilizer map
 for k, v in stabilizer_map.items():

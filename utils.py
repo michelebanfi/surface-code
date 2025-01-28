@@ -3,9 +3,11 @@ from qiskit.transpiler.preset_passmanagers import generate_preset_pass_manager
 from collections import defaultdict
 from qiskit_aer import AerSimulator
 from qiskit import transpile
+import math
 
-def logical_x(qc):
-    available_qubits = [0, 2]
+def logical_x(grid, qc):
+    # the available qubits will be those in an even number between 0 and grid**2
+    available_qubits = [i for i in range(grid) if i % 2 == 0]
     for q in available_qubits:
         qc.x(q)
 
@@ -19,10 +21,11 @@ def apply_stabilizers(qc, grid, classical_bits=0, stabilizer_map=None):
                     # print("Applying Z stabilizers for qubit", current)
                     qc.reset(current)
                     qc.cx(current - 1, current)  # previuos qubit
-
                     stabilizer_map[current].append(current - 1)
+
                     qc.cx(current + 1, current)  # next qubit
                     stabilizer_map[current].append(current + 1)
+
                     # if is the first row of the grid, then the qubit has connection with the qubit in the last row
                     if i != 0:
                         qc.cx(current - grid, current)  # qubit above
@@ -30,6 +33,7 @@ def apply_stabilizers(qc, grid, classical_bits=0, stabilizer_map=None):
                     if i != grid - 1:
                         qc.cx(current + grid, current)  # qubit below
                         stabilizer_map[current].append(current + grid)
+
                     # measure the qubit onto the corresponding classical bit
                     qc.measure(current, classical_bits)
                     classical_bits += 1
@@ -42,8 +46,10 @@ def apply_stabilizers(qc, grid, classical_bits=0, stabilizer_map=None):
 
                     qc.cx(current + grid, current)  # qubit below
                     stabilizer_map[current].append(current + grid)
+
                     qc.cx(current - grid, current)  # qubit above
                     stabilizer_map[current].append(current - grid)
+
                     # if is the last row of the grid, then the qubit has connection with the qubit in the first row
                     if j != 0:
                         qc.cx(current - 1, current)
@@ -51,6 +57,7 @@ def apply_stabilizers(qc, grid, classical_bits=0, stabilizer_map=None):
                     if j != grid - 1:
                         qc.cx(current + 1, current)  # next qubit
                         stabilizer_map[current].append(current + 1)
+
                     qc.h(current)
                     qc.measure(current, classical_bits)
                     qc.barrier()
