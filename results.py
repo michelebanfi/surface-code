@@ -7,8 +7,13 @@ service = QiskitRuntimeService(
     instance='ibm-q/open/main',
     token='039fcc48a1c2eae0fa22fe7857e5a02ed89cd782d5738fac3bbd97d8f6e0506b330bd51db32ed92ca4a07490141cc7c3dfade0618db865772491155d7b4f2192'
 )
-job = service.job('cybs2e101rbg008jv960')
+# cyca1sz7v8tg008g29ag    5qubits
+# cybs2e101rbg008jv960
+job = service.job('cyca1sz7v8tg008g29ag')
 job_result = job.result()
+print("items: ",job_result[0].data.items())
+print("keys: ",job_result[0].data.keys())
+print("values: ",job_result[0].data.values())
 print(f"Ancillas outcome: {job_result[0].data.c.get_counts()}")
 print(f"Qubit outcome: {job_result[0].data.meas.get_counts()}")
 

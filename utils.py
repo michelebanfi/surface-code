@@ -3,6 +3,7 @@ from qiskit.transpiler.preset_passmanagers import generate_preset_pass_manager
 from collections import defaultdict
 from qiskit_aer import AerSimulator
 from qiskit import transpile
+from qiskit_aer.noise import NoiseModel, depolarizing_error
 import math
 
 def logical_x(grid, qc):
@@ -147,7 +148,9 @@ def run_on_ibm(qc):
 
 def run_on_simulator(qc):
     # Use AerSimulator for simulation
-    simulator = AerSimulator()
+    noiseModel = NoiseModel()
+    noiseModel.add_all_qubit_quantum_error(depolarizing_error(0.05, 1), 'x')
+    simulator = AerSimulator(noise_model=noiseModel)
     compiled_circuit = transpile(qc, simulator)
     result = simulator.run(compiled_circuit, shots=1024).result()
     counts = result.get_counts()

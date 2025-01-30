@@ -5,7 +5,7 @@ import matplotlib.pyplot as plt
 from utils import apply_stabilizers, logical_x, mwpm_decoder, run_on_ibm, run_on_simulator
 
 API_KEY = "039fcc48a1c2eae0fa22fe7857e5a02ed89cd782d5738fac3bbd97d8f6e0506b330bd51db32ed92ca4a07490141cc7c3dfade0618db865772491155d7b4f2192"
-SIMULATION = False
+SIMULATION = True
 
 grid = 5
 n_rounds = 2
