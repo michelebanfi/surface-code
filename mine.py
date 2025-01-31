@@ -7,7 +7,7 @@ from utils import apply_stabilizers, logical_x, mwpm_decoder, run_on_ibm, run_on
 API_KEY = "039fcc48a1c2eae0fa22fe7857e5a02ed89cd782d5738fac3bbd97d8f6e0506b330bd51db32ed92ca4a07490141cc7c3dfade0618db865772491155d7b4f2192"
 SIMULATION = True
 
-grid = 5
+grid = 3
 n_rounds = 2
 
 if grid % 2 != 1:
@@ -18,7 +18,7 @@ n_syndrome = (grid ** 2) - n_data
 
 data_qubits = list(range(grid**2))
 
-qc = QuantumCircuit(n_data + n_syndrome, n_syndrome * n_rounds)
+qc = QuantumCircuit(n_data + n_syndrome, (n_syndrome * n_rounds) + grid**2)
 
 stabilizer_map = {}
 
@@ -30,19 +30,20 @@ for i in range(grid**2):
         stabilizer_map[i] = []
 
 classical_bits = 0
+for i in range(n_rounds):
+    classical_bits, stabilizer_map = apply_stabilizers(qc, grid, classical_bits, stabilizer_map)
 
-classical_bits, stabilizer_map = apply_stabilizers(qc, grid, classical_bits, stabilizer_map)
 
-qc.barrier()
-logical_x(grid, qc)
-qc.barrier()
-
-classical_bits, stabilizer_map = apply_stabilizers(qc, grid, classical_bits, stabilizer_map)
-qc.measure_all()
+# iterate from (n_syndrome * n_rounds) till grid**2 to measure the grid qubits
+c = n_syndrome * n_rounds
+for i in range(grid**2):
+    print(f"Measuring qubit {i} onto classical bit {c}")
+    qc.measure(i, c)
+    c = c + 1
 
 # plot the circuit
 qc.draw('mpl')
-plt.show()
+plt.savefig("circuit.png")
 plt.close()
 
 # iterate through the stabilizer map
@@ -57,8 +58,10 @@ if SIMULATION:
 else:
     counts = run_on_ibm(qc)
 
+print(counts)
+
 # Apply decoder
-corrected = mwpm_decoder(counts, stabilizer_map)
+corrected = mwpm_decoder(counts, stabilizer_map, n_rounds)
 
 # Analyze results
 print("LOG - Most common outcomes:")

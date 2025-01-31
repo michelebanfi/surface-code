@@ -9,31 +9,26 @@ service = QiskitRuntimeService(
 )
 # cyca1sz7v8tg008g29ag    5qubits
 # cybs2e101rbg008jv960
-job = service.job('cyca1sz7v8tg008g29ag')
+# cydqckt9b62g008jgdwg   7qubits with not in the middle
+# cydqh6mrta1g0087zskg 7 qubits without not in the middle, last one
+job = service.job('cydqh6mrta1g0087zskg')
+print(job)
 job_result = job.result()
 print("items: ",job_result[0].data.items())
 print("keys: ",job_result[0].data.keys())
 print("values: ",job_result[0].data.values())
 print(f"Ancillas outcome: {job_result[0].data.c.get_counts()}")
-print(f"Qubit outcome: {job_result[0].data.meas.get_counts()}")
+
 
 # print max result from the classical register
 max_result = max(job_result[0].data.c.get_counts(), key=job_result[0].data.c.get_counts().get)
 print(f"Max result from classical register: {max_result}")
 
-# print max result from the measurement register
-max_result = max(job_result[0].data.meas.get_counts(), key=job_result[0].data.meas.get_counts().get)
-print(f"Max result from measurement register: {max_result}")
-
 # Classical register histogram
-plot_histogram(job_result[0].data.c.get_counts())
-plt.show()
-plt.close()
+# plot_histogram(job_result[0].data.c.get_counts())
+# plt.show()
+# plt.close()
 
-# Measurement register histogram
-plot_histogram(job_result[0].data.meas.get_counts())
-plt.show()
-plt.close()
 
 # To get counts for a particular pub result, use
 #

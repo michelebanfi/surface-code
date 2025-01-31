@@ -66,7 +66,7 @@ def apply_stabilizers(qc, grid, classical_bits=0, stabilizer_map=None):
     return classical_bits, stabilizer_map
 
 # Decoder implementation
-def mwpm_decoder(counts, stabilizer_map):
+def mwpm_decoder(counts, stabilizer_map, n_rounds):
     corrected_counts = defaultdict(int)
 
     for bitstring, count in counts.items():

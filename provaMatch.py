@@ -77,6 +77,18 @@ def decode_once(t1, t2, stabilizer_map):
     matching = nx.min_weight_matching(G)
     return matching
 
+def apply_corrections(match_result, stabilizer_map, data_qubit_states):
+    """
+    For each matched pair (stabA, stabB), flip the data qubits that
+    differ between those stabilizers.
+    """
+    for (stabA, stabB) in match_result:
+        qubitsA = set(stabilizer_map.get(stabA, []))
+        qubitsB = set(stabilizer_map.get(stabB, []))
+        path_qubits = qubitsA.symmetric_difference(qubitsB)
+        for dq in path_qubits:
+            data_qubit_states[dq] ^= 1  # Flip 0->1 or 1->0
+    return data_qubit_states
 
 # Example usage:
 
@@ -100,8 +112,17 @@ t1 = "000000000000"
 t2 = "100001000010"
 # t2 differs in the 5th bit and 10th bit, for instance.
 
+# Build a naive data_qubit_states dict of size 25 (for a 5x5)
+data_qubit_states = {i: 0 for i in range(25)}
+
 match_result = decode_once(t1, t2, stabilizer_map_example)
 
 print("Flips from t1 to t2 -> MWPM matching result:")
 print(match_result)
 # Example output might look like: {(5, 10)} meaning stabilizer #5 matched with #10
+
+# 2) Apply corrections
+updated_states = apply_corrections(match_result, stabilizer_map_example, data_qubit_states)
+
+print("Data qubit states after naive correction:")
+print(updated_states)
