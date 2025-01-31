@@ -1,11 +1,17 @@
 from qiskit.visualization import plot_histogram
 from qiskit_ibm_runtime import QiskitRuntimeService
 import matplotlib.pyplot as plt
+from dotenv import load_dotenv
+import os
+
+
+load_dotenv()
+API_KEY = os.getenv("IBM_API_KEY")
 
 service = QiskitRuntimeService(
     channel='ibm_quantum',
     instance='ibm-q/open/main',
-    token='039fcc48a1c2eae0fa22fe7857e5a02ed89cd782d5738fac3bbd97d8f6e0506b330bd51db32ed92ca4a07490141cc7c3dfade0618db865772491155d7b4f2192'
+    token=API_KEY
 )
 # cyca1sz7v8tg008g29ag    5qubits
 # cybs2e101rbg008jv960

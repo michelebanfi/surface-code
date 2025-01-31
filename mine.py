@@ -2,11 +2,15 @@ from qiskit import QuantumCircuit, transpile
 from qiskit.visualization import plot_histogram
 import matplotlib.pyplot as plt
 import networkx as nx
+from dotenv import load_dotenv
+import os
 
 from utils import apply_stabilizers, logical_x, run_on_ibm, run_on_simulator
 
-API_KEY = "039fcc48a1c2eae0fa22fe7857e5a02ed89cd782d5738fac3bbd97d8f6e0506b330bd51db32ed92ca4a07490141cc7c3dfade0618db865772491155d7b4f2192"
+load_dotenv()
+API_KEY = os.getenv("IBM_API_KEY")
 SIMULATION = True
+LOAD = False
 
 grid = 3
 n_rounds = 2
@@ -200,5 +204,13 @@ logical_error_rate = calculate_logical_error(
     stabilizer_map=stabilizer_map,
     detection_events=detection_events
 )
+
+# Draw the matching graph
+pos = nx.spring_layout(G)
+nx.draw(G, pos, with_labels=True, node_color='lightblue')
+labels = nx.get_edge_attributes(G, 'weight')
+nx.draw_networkx_edge_labels(G, pos, edge_labels=labels)
+plt.savefig("matching_graph.png")
+plt.close()
 
 print(f"Logical Error Rate: {logical_error_rate:.4f}")
