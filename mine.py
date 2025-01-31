@@ -30,9 +30,11 @@ for i in range(grid**2):
         stabilizer_map[i] = []
 
 classical_bits = 0
-for i in range(n_rounds):
-    classical_bits, stabilizer_map = apply_stabilizers(qc, grid, classical_bits, stabilizer_map)
-
+# for i in range(n_rounds):
+#     classical_bits, stabilizer_map = apply_stabilizers(qc, grid, classical_bits, stabilizer_map)
+classical_bits, stabilizer_map = apply_stabilizers(qc, grid, classical_bits, stabilizer_map)
+qc.x(0)
+classical_bits, stabilizer_map = apply_stabilizers(qc, grid, classical_bits, stabilizer_map)
 
 # iterate from (n_syndrome * n_rounds) till grid**2 to measure the grid qubits
 c = n_syndrome * n_rounds
