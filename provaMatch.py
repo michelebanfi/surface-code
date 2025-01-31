@@ -184,17 +184,13 @@ if __name__ == "__main__":
 
     # Example stabilizer map (the indices might differ in your code):
     # Key = stabilizer index, Value = which data qubits it touches
-    stabilizer_map_example = {
-        1: [0, 2, 4],
-        3: [0, 4, 6],
-        5: [8, 2, 4],
-        7: [8, 4, 6]}
+    stabilizer_map_example = {1: [0, 2, 4], 3: [0, 4, 6], 5: [8, 2, 4], 7: [8, 4, 6]}
 
     # Let's say our measurement string is 17 bits:
     # (9 bits for data qubits, 8 bits for stabilizers in 2 rounds).
     # Example: "00000000000000000"
     # We'll flip a few bits to see interesting behavior:
-    result_str = "00000001100010000"
+    result_str = "10001110000100010"
     # Explanation (assuming left->right):
     # - first 9 = "000000001" for data qubits (in reverse)
     # - next 4 = "0000" for round 0 stabilizers

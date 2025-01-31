@@ -45,18 +45,18 @@ def apply_stabilizers(qc, grid, classical_bits=0, stabilizer_map=None):
                     qc.reset(current)
                     qc.h(current)
 
-                    qc.cx(current + grid, current)  # qubit below
+                    qc.cx(current, current + grid)  # qubit below
                     stabilizer_map[current].append(current + grid)
 
-                    qc.cx(current - grid, current)  # qubit above
+                    qc.cx(current, current - grid)  # qubit above
                     stabilizer_map[current].append(current - grid)
 
                     # if is the last row of the grid, then the qubit has connection with the qubit in the first row
                     if j != 0:
-                        qc.cx(current - 1, current)
+                        qc.cx(current, current - 1)
                         stabilizer_map[current].append(current - 1)
                     if j != grid - 1:
-                        qc.cx(current + 1, current)  # next qubit
+                        qc.cx(current, current + 1)  # next qubit
                         stabilizer_map[current].append(current + 1)
 
                     qc.h(current)
