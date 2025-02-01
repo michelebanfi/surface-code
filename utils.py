@@ -1,10 +1,9 @@
 from qiskit_ibm_runtime import QiskitRuntimeService, Session, Sampler
 from qiskit.transpiler.preset_passmanagers import generate_preset_pass_manager
-from collections import defaultdict
 from qiskit_aer import AerSimulator
 from qiskit import transpile
 from qiskit_aer.noise import NoiseModel, depolarizing_error
-import math
+import networkx as nx
 
 def logical_x(grid, qc):
     # the available qubits will be those in an even number between 0 and grid**2
@@ -65,42 +64,6 @@ def apply_stabilizers(qc, grid, classical_bits=0, stabilizer_map=None):
                     classical_bits += 1
     return classical_bits, stabilizer_map
 
-# Decoder implementation
-def mwpm_decoder(counts, stabilizer_map, n_rounds):
-    corrected_counts = defaultdict(int)
-
-    for bitstring, count in counts.items():
-        # Split into syndrome (8 bits) and final measurement (9 bits)
-        bitstring = bitstring.split(' ')
-        # final_meas = bitstring[:grid**2]
-        # syndrome = bitstring[grid**2:]
-        final_meas = bitstring[0]
-        syndrome = bitstring[1]
-
-        # Compare syndrome rounds
-        round1 = [int(s) for s in syndrome[:4]]
-        round2 = [int(s) for s in syndrome[4:]]
-        defects = [i for i in range(4) if round1[i] != round2[i]]
-
-        # Simple MWPM heuristic for 3x3 grid
-        corrections = set()
-        if len(defects) == 2:
-            # Match adjacent defects
-            d1, d2 = defects
-            common_qubits = set(stabilizer_map[d1 * 2]) & set(stabilizer_map[d2 * 2])
-            if common_qubits:
-                corrections.add(min(common_qubits))
-
-        # Apply corrections to final measurement
-        corrected = list(final_meas[::-1])  # Qiskit uses little-endian
-        for q in corrections:
-            if q < len(corrected):
-                corrected[q] = '1' if corrected[q] == '0' else '0'
-
-        corrected_counts[''.join(corrected[::-1]) + ' ' + syndrome] += count
-
-    return corrected_counts
-
 # Instead of AerSimulator, use IBM Quantum Provider
 def run_on_ibm(qc):
     service = QiskitRuntimeService()
@@ -155,3 +118,123 @@ def run_on_simulator(qc):
     result = simulator.run(compiled_circuit, shots=1024).result()
     counts = result.get_counts()
     return counts
+
+def process_detection_events(counts, grid, n_rounds):
+    stabilizer_qubits = [i for i in range(grid ** 2) if i % 2 == 1]
+    n_syndrome = len(stabilizer_qubits)
+    detection_events = []
+
+    for shot in counts.keys():
+        syndrome_part = shot[-(n_syndrome * n_rounds):]
+        syndrome_rounds = [syndrome_part[i * n_syndrome:(i + 1) * n_syndrome] for i in range(n_rounds)]
+
+        for t in range(1, n_rounds):
+            current = syndrome_rounds[t]
+            previous = syndrome_rounds[t - 1]
+            for s in range(n_syndrome):
+                if current[s] != previous[s]:
+                    qubit = stabilizer_qubits[s]
+                    row = qubit // grid
+                    col = qubit % grid
+                    stab_type = 'Z' if (row % 2 == 0) else 'X'
+                    detection_events.append((row, col, stab_type, t))
+    return detection_events
+
+def build_mwpm_graph(detection_events, grid):
+    G = nx.Graph()
+    G.add_node('boundary')
+
+    for event in detection_events:
+        row, col, stab_type, t = event
+        node_id = f"{row},{col},{t}"
+        G.add_node(node_id)
+
+        # Distance to relevant boundary
+        if stab_type == 'Z':
+            distance = min(row, (grid - 1) - row)
+        else:
+            distance = min(col, (grid - 1) - col)
+        G.add_edge(node_id, 'boundary', weight=distance)
+
+        # Edges to other events
+        for other in detection_events:
+            if other == event:
+                continue
+            orow, ocol, ostab_type, ot = other
+            if ostab_type != stab_type:
+                continue
+            manhattan = abs(row - orow) + abs(col - ocol)
+            other_id = f"{orow},{ocol},{ot}"
+            G.add_edge(node_id, other_id, weight=manhattan)
+
+    return G
+
+def apply_mwpm(G):
+    # Invert weights for max weight matching
+    inverted_G = nx.Graph()
+    for u, v, data in G.edges(data=True):
+        inverted_G.add_edge(u, v, weight=-data['weight'])
+
+    matching = nx.max_weight_matching(inverted_G, maxcardinality=True)
+    total_weight = sum(G[u][v]['weight'] for u, v in matching)
+
+    return list(matching), total_weight
+
+def calculate_logical_error(counts, grid, matching):
+    logical_errors = 0
+    total_shots = sum(counts.values())
+
+    for shot, freq in counts.items():
+        data_bits = shot[-(grid ** 2):]
+        # Apply corrections based on matching
+        # (Implement correction application here)
+        # Compute logical Z by parity of a row
+        logical_z = sum(int(data_bits[i]) for i in [0, 2, 4, 6, 8]) % 2
+        if logical_z != 0:
+            logical_errors += freq
+
+    return logical_errors / total_shots
+
+def calculate_logical_error(counts, grid, matching, stabilizer_map, detection_events):
+    logical_errors = 0
+    total_shots = sum(counts.values())
+
+    # Map detection events to stabilizer indices
+    event_to_stabilizer = {}
+    for event in detection_events:
+        row, col, stab_type, t = event
+        qubit_idx = row * grid + col
+        event_id = f"{row},{col},{t}"
+        event_to_stabilizer[event_id] = qubit_idx
+
+    for shot, freq in counts.items():
+        data_bits = list(shot[:(grid ** 2)])
+
+        # Apply corrections from matching
+        for pair in matching:
+            node1, node2 = pair
+
+            # Get involved stabilizers
+            stab1 = event_to_stabilizer.get(node1, None)
+            stab2 = event_to_stabilizer.get(node2, None)
+
+            # Boundary case
+            if node1 == 'boundary' or node2 == 'boundary':
+                # Find which stabilizer is real
+                real_stab = stab1 if stab2 == 'boundary' else stab2
+
+                # Flip all data qubits connected to this stabilizer
+                for q in stabilizer_map.get(real_stab, []):
+                    data_bits[q] = '1' if data_bits[q] == '0' else '0'
+            else:
+                # Find common data qubits between stabilizer pair
+                common = set(stabilizer_map[stab1]) & set(stabilizer_map[stab2])
+                for q in common:
+                    data_bits[q] = '1' if data_bits[q] == '0' else '0'
+
+        # Check logical Z parity
+        parity = sum(int(data_bits[q]) for q in logical_z_chain) % 2
+        if parity != 0:
+            logical_errors += freq
+
+    return logical_errors / total_shots

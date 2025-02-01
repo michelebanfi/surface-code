@@ -5,10 +5,11 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="8bacb71a-0168-4f9d-a192-30f77c25621a" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/.gitignore" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/circuit.png" beforeDir="false" afterPath="$PROJECT_DIR$/circuit.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/matching_graph.png" beforeDir="false" afterPath="$PROJECT_DIR$/matching_graph.png" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/mine.py" beforeDir="false" afterPath="$PROJECT_DIR$/mine.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/results.py" beforeDir="false" afterPath="$PROJECT_DIR$/results.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/utils.py" beforeDir="false" afterPath="$PROJECT_DIR$/utils.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -58,7 +59,7 @@
   </component>
   <component name="PropertiesComponent"><![CDATA[{
   "keyToString": {
-    "Python.mine.executor": "Run",
+    "Python.mine.executor": "Debug",
     "Python.prova.executor": "Run",
     "Python.provaMatch.executor": "Run",
     "Python.results.executor": "Run",
@@ -130,7 +131,7 @@
       <workItem from="1737974160471" duration="5877000" />
       <workItem from="1738053098677" duration="3125000" />
       <workItem from="1738332928525" duration="123000" />
-      <workItem from="1738333122966" duration="10649000" />
+      <workItem from="1738333122966" duration="11668000" />
     </task>
     <servers />
   </component>
@@ -144,7 +145,7 @@
     <SUITE FILE_PATH="coverage/ToricCodes$mine.coverage" NAME="mine Coverage Results" MODIFIED="1738085204506" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
     <SUITE FILE_PATH="coverage/ToricCodes$results.coverage" NAME="results Coverage Results" MODIFIED="1738079020265" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
     <SUITE FILE_PATH="coverage/surface_code$prova.coverage" NAME="prova Coverage Results" MODIFIED="1738353710612" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
-    <SUITE FILE_PATH="coverage/surface_code$mine.coverage" NAME="mine Coverage Results" MODIFIED="1738356187471" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
+    <SUITE FILE_PATH="coverage/surface_code$mine.coverage" NAME="mine Coverage Results" MODIFIED="1738401078484" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
     <SUITE FILE_PATH="coverage/ToricCodes$prova.coverage" NAME="prova Coverage Results" MODIFIED="1738081079483" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
     <SUITE FILE_PATH="coverage/surface_code$utils.coverage" NAME="utils Coverage Results" MODIFIED="1738053875422" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
     <SUITE FILE_PATH="coverage/surface_code$provaMatch.coverage" NAME="provaMatch Coverage Results" MODIFIED="1738348241914" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
