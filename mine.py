@@ -17,7 +17,7 @@ stats_history = []
 if not SIMULATION: NUM_TRIALS = 1
 
 for trial in range(NUM_TRIALS):
-    grid = 9
+    grid = 11
     n_rounds = 4
 
     if grid % 2 != 1:

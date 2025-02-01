@@ -34,18 +34,20 @@ def aggregate_stats(stats_list):
 stats_5x5 = load_stats('stats/stats_grid_5.pkl')
 stats_7x7 = load_stats('stats/stats_grid_7.pkl')
 stats_9x9 = load_stats('stats/stats_grid_9.pkl')
+stats_11x11 = load_stats('stats/stats_grid_11.pkl')
 # Add more grid sizes as needed (e.g., stats_9x9)
 
 # Aggregate the stats (if you have only one run, aggregation simply returns that run's values)
 agg_5 = aggregate_stats(stats_5x5)
 agg_7 = aggregate_stats(stats_7x7)
 agg_9 = aggregate_stats(stats_9x9)
+agg_11 = aggregate_stats(stats_11x11)
 
 # For plotting, we create lists of grid sizes and corresponding average metrics.
-grid_sizes = [5, 7, 9]
-logical_error_rates = [agg_5['avg_logical_error_rate'], agg_7['avg_logical_error_rate'], agg_9['avg_logical_error_rate']]
-detected_error_rates = [agg_5['avg_detected_error_rate'], agg_7['avg_detected_error_rate'], agg_9['avg_detected_error_rate']]
-physical_errors = [agg_5['avg_physical_errors'], agg_7['avg_physical_errors'], agg_9['avg_physical_errors']]
+grid_sizes = [5, 7, 9, 11]
+logical_error_rates = [agg_5['avg_logical_error_rate'], agg_7['avg_logical_error_rate'], agg_9['avg_logical_error_rate'], agg_11['avg_logical_error_rate']]
+detected_error_rates = [agg_5['avg_detected_error_rate'], agg_7['avg_detected_error_rate'], agg_9['avg_detected_error_rate'], agg_11['avg_detected_error_rate']]
+physical_errors = [agg_5['avg_physical_errors'], agg_7['avg_physical_errors'], agg_9['avg_physical_errors'], agg_11['avg_physical_errors']]
 
 # Now plot the comparisons:
 plt.figure(figsize=(12, 5))
