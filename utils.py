@@ -4,6 +4,8 @@ from qiskit_aer import AerSimulator
 from qiskit import transpile
 from qiskit_aer.noise import NoiseModel, depolarizing_error
 import networkx as nx
+from random import random
+import matplotlib.pyplot as plt
 
 def logical_x(grid, qc):
     # the available qubits will be those in an even number between 0 and grid**2
@@ -112,8 +114,9 @@ def run_on_ibm(qc):
 def run_on_simulator(qc):
     # Use AerSimulator for simulation
     noiseModel = NoiseModel()
-    noiseModel.add_all_qubit_quantum_error(depolarizing_error(0.05, 1), 'x')
-    simulator = AerSimulator(noise_model=noiseModel)
+    #noiseModel.add_all_qubit_quantum_error(depolarizing_error(0.05, 1), 'x')
+    #simulator = AerSimulator(noise_model=noiseModel)
+    simulator = AerSimulator()
     compiled_circuit = transpile(qc, simulator)
     result = simulator.run(compiled_circuit, shots=1024).result()
     counts = result.get_counts()
@@ -180,22 +183,7 @@ def apply_mwpm(G):
 
     return list(matching), total_weight
 
-def calculate_logical_error(counts, grid, matching):
-    logical_errors = 0
-    total_shots = sum(counts.values())
-
-    for shot, freq in counts.items():
-        data_bits = shot[-(grid ** 2):]
-        # Apply corrections based on matching
-        # (Implement correction application here)
-        # Compute logical Z by parity of a row
-        logical_z = sum(int(data_bits[i]) for i in [0, 2, 4, 6, 8]) % 2
-        if logical_z != 0:
-            logical_errors += freq
-
-    return logical_errors / total_shots
-
-def calculate_logical_error(counts, grid, matching, stabilizer_map, detection_events):
+def calculate_logical_error_subrutine(counts, grid, matching, stabilizer_map, detection_events, logical_z_chain):
     logical_errors = 0
     total_shots = sum(counts.values())
 
@@ -238,3 +226,75 @@ def calculate_logical_error(counts, grid, matching, stabilizer_map, detection_ev
             logical_errors += freq
 
     return logical_errors / total_shots
+
+def inject_random_errors(qc, grid, error_prob=0.1):
+    """Inject random X errors with given probability"""
+    for q in range(grid**2):
+        if q % 2 == 0 and random() < error_prob:  # Only data qubits (even indices)
+            qc.x(q)
+    return qc
+
+def calculate_error_statistics(G, counts, grid, matching, stabilizer_map, detection_events, logical_z_chain):
+    stats = {
+        'total_errors': 0,
+        'detected_errors': len(detection_events),
+        'corrected_pairs': len(matching),
+        'logical_errors': 0,
+        'weight_histogram': []
+    }
+
+    # Map detection events to stabilizers
+    event_to_stabilizer = {}
+    for event in detection_events:
+        row, col, stab_type, t = event
+        qubit_idx = row * grid + col
+        event_id = f"{row},{col},{t}"
+        event_to_stabilizer[event_id] = qubit_idx
+
+    for shot, freq in counts.items():
+        # Count physical errors (assuming ideal simulation)
+        data_bits = list(shot[-(grid ** 2):])
+        stats['total_errors'] += sum(int(bit) for bit in data_bits) * freq
+
+        # Track matching weights
+        for pair in matching:
+            node1, node2 = pair
+            if node1 != 'boundary' and node2 != 'boundary':
+                weight = G[node1][node2]['weight']
+                stats['weight_histogram'].extend([weight] * freq)
+
+    # Add logical error calculation
+    stats['logical_errors'] = calculate_logical_error_subrutine(counts, grid, matching, stabilizer_map, detection_events, logical_z_chain) * sum(
+        counts.values())
+
+    return stats
+
+def plot_error_stats(stats_history):
+
+    # print the stats history
+    for stats in stats_history:
+        print(stats)
+
+    plt.figure(figsize=(12, 6))
+
+    # Plot error rates
+    plt.subplot(121)
+    plt.plot([s['logical_errors'] / s['total_shots'] for s in stats_history], label='Logical')
+    plt.plot([s['detected_errors'] / s['total_shots'] for s in stats_history], label='Detected')
+    plt.xlabel('Trial')
+    plt.ylabel('Error Rate')
+    plt.legend()
+
+    # Plot matching weights
+    plt.subplot(122)
+    all_weights = [w for s in stats_history for w in s['weight_histogram']]
+    if all_weights:
+        plt.hist(all_weights, bins=range(0, max(all_weights) + 1))
+    else:
+        plt.hist([], bins=range(0, 1))
+    plt.xlabel('Matching Weight')
+    plt.ylabel('Frequency')
+
+    plt.tight_layout()
+    plt.savefig("error_stats.png")
+    plt.close()

@@ -4,94 +4,105 @@ import networkx as nx
 from dotenv import load_dotenv
 import os
 
-from utils import apply_stabilizers, run_on_ibm, run_on_simulator
-from utils import process_detection_events, build_mwpm_graph, apply_mwpm, calculate_logical_error
+from utils import apply_stabilizers, run_on_ibm, run_on_simulator, calculate_error_statistics, plot_error_stats
+from utils import process_detection_events, build_mwpm_graph, apply_mwpm, inject_random_errors
 
 load_dotenv()
 API_KEY = os.getenv("IBM_API_KEY")
 SIMULATION = True
-LOAD = False
+NUM_TRIALS = 10
+stats_history = []
 
-grid = 3
-n_rounds = 2
+if not SIMULATION: NUM_TRIALS = 1
 
-if grid % 2 != 1:
-    raise ValueError("Grid size must be an odd number")
+for trial in range(NUM_TRIALS):
+    grid = 3
+    n_rounds = 2
 
-n_data = (grid ** 2)//2 + 1
-n_syndrome = (grid ** 2) - n_data
+    if grid % 2 != 1:
+        raise ValueError("Grid size must be an odd number")
 
-data_qubits = list(range(grid**2))
+    n_data = (grid ** 2)//2 + 1
+    n_syndrome = (grid ** 2) - n_data
 
-qc = QuantumCircuit(n_data + n_syndrome, (n_syndrome * n_rounds) + grid**2)
+    data_qubits = list(range(grid**2))
 
-stabilizer_map = {}
+    qc = QuantumCircuit(n_data + n_syndrome, (n_syndrome * n_rounds) + grid**2)
 
-# Initialize the qubits
-for i in range(grid**2):
-    if i % 2 == 0:
-        qc.initialize([1, 0], i)
-    else:
-        stabilizer_map[i] = []
+    stabilizer_map = {}
 
-classical_bits = 0
+    # Initialize the qubits
+    for i in range(grid**2):
+        if i % 2 == 0:
+            qc.initialize([1, 0], i)
+        else:
+            stabilizer_map[i] = []
 
-classical_bits, stabilizer_map = apply_stabilizers(qc, grid, classical_bits, stabilizer_map)
+    classical_bits = 0
 
-qc.x(0)
-
-for _ in range(n_rounds - 1):
     classical_bits, stabilizer_map = apply_stabilizers(qc, grid, classical_bits, stabilizer_map)
 
-# iterate from (n_syndrome * n_rounds) till grid**2 to measure the grid qubits
-c = n_syndrome * n_rounds
-for i in range(grid**2):
-    # print(f"Measuring qubit {i} onto classical bit {c}")
-    qc.measure(i, c)
-    c = c + 1
+    qc = inject_random_errors(qc, grid, error_prob=0.1)  # After initialization, before stabilizers
 
-# plot the circuit
-qc.draw('mpl')
-plt.savefig("circuit.png")
-plt.close()
+    for _ in range(n_rounds - 1):
+        classical_bits, stabilizer_map = apply_stabilizers(qc, grid, classical_bits, stabilizer_map)
 
-# iterate through the stabilizer map
-for k, v in stabilizer_map.items():
-    # the value is a list of connections, remove duplicates
-    stabilizer_map[k] = list(set(v))
+    # iterate from (n_syndrome * n_rounds) till grid**2 to measure the grid qubits
+    c = n_syndrome * n_rounds
+    for i in range(grid**2):
+        # print(f"Measuring qubit {i} onto classical bit {c}")
+        qc.measure(i, c)
+        c = c + 1
 
-print(stabilizer_map)
+    # plot the circuit
+    qc.draw('mpl')
+    plt.savefig("circuit.png")
+    plt.close()
 
-if SIMULATION:
-    counts = run_on_simulator(qc)
-else:
-    counts = run_on_ibm(qc)
+    # iterate through the stabilizer map
+    for k, v in stabilizer_map.items():
+        # the value is a list of connections, remove duplicates
+        stabilizer_map[k] = list(set(v))
 
-print(counts)
+    print(stabilizer_map)
 
-detection_events = process_detection_events(counts, grid, n_rounds)
-G = build_mwpm_graph(detection_events, grid)
-matching, total_weight = apply_mwpm(G)
+    if SIMULATION:
+        counts = run_on_simulator(qc)
+    else:
+        counts = run_on_ibm(qc)
 
-# Vertical chain for logical Z (indices 0,4,8 in 3x3 grid)
-# logical_z_chain = [i*2 for i in range(grid)]
-logical_z_chain = [0, 6]
+    print(counts)
 
-# After detection_events and matching are calculated
-logical_error_rate = calculate_logical_error(
-    counts,
-    grid=3,
-    matching=matching,
-    stabilizer_map=stabilizer_map,
-    detection_events=detection_events
-)
+    detection_events = process_detection_events(counts, grid, n_rounds)
+    G = build_mwpm_graph(detection_events, grid)
+    matching, total_weight = apply_mwpm(G)
 
-# Draw the matching graph
-pos = nx.spring_layout(G)
-nx.draw(G, pos, with_labels=True, node_color='lightblue')
-labels = nx.get_edge_attributes(G, 'weight')
-nx.draw_networkx_edge_labels(G, pos, edge_labels=labels)
-plt.savefig("matching_graph.png")
-plt.close()
+    # Vertical chain for logical Z (indices 0,4,8 in 3x3 grid)
+    # logical_z_chain = [i*2 for i in range(grid)]
+    logical_z_chain = [0, 6]
 
-print(f"Logical Error Rate: {logical_error_rate:.4f}")
+    # After detection_events and matching are calculated
+    # logical_error_rate = calculate_logical_error(
+    #     counts,
+    #     grid=3,
+    #     matching=matching,
+    #     stabilizer_map=stabilizer_map,
+    #     detection_events=detection_events,
+    #     logical_z_chain=logical_z_chain
+    # )
+
+    stats = calculate_error_statistics(G, counts, grid, matching, stabilizer_map, detection_events, logical_z_chain)
+    stats['total_shots'] = sum(counts.values())
+    stats_history.append(stats)
+
+    # Draw the matching graph
+    # pos = nx.spring_layout(G)
+    # nx.draw(G, pos, with_labels=True, node_color='lightblue')
+    # labels = nx.get_edge_attributes(G, 'weight')
+    # nx.draw_networkx_edge_labels(G, pos, edge_labels=labels)
+    # plt.savefig("matching_graph.png")
+    # plt.close()
+
+    # print(f"Logical Error Rate: {logical_error_rate:.4f}")
+
+plot_error_stats(stats_history)
