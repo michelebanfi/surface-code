@@ -3,6 +3,8 @@ from qiskit_ibm_runtime import QiskitRuntimeService
 import matplotlib.pyplot as plt
 from dotenv import load_dotenv
 import os
+import networkx as nx
+import pickle
 
 from mine import stats_history
 from utils import process_detection_events, build_mwpm_graph, apply_mwpm, calculate_error_statistics, plot_error_stats
@@ -42,14 +44,19 @@ stats = calculate_error_statistics(G, counts, grid, matching, stabilizer_map, de
 stats['total_shots'] = sum(counts.values())
 stats_history.append(stats)
 
+# create a new object to combine all the stats and the counts
+stats['counts'] = counts
+
+# save stats under /stats folder with grid size as name. Save them as python objects.
+with open(f'stats/stats_grid_{grid}.pkl', 'wb') as f:
+    pickle.dump(stats, f)
+
 # Draw the matching graph
-# pos = nx.spring_layout(G)
-# nx.draw(G, pos, with_labels=True, node_color='lightblue')
-# labels = nx.get_edge_attributes(G, 'weight')
-# nx.draw_networkx_edge_labels(G, pos, edge_labels=labels)
-# plt.savefig("matching_graph.png")
-# plt.close()
+pos = nx.spring_layout(G)
+nx.draw(G, pos, with_labels=True, node_color='lightblue')
+labels = nx.get_edge_attributes(G, 'weight')
+nx.draw_networkx_edge_labels(G, pos, edge_labels=labels)
+plt.savefig(f"stats/{grid}_matching_graph.png")
+plt.close()
 
-# print(f"Logical Error Rate: {logical_error_rate:.4f}")
-
-plot_error_stats(stats_history)
+# plot_error_stats(stats_history)
