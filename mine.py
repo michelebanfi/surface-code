@@ -1,6 +1,5 @@
 from qiskit import QuantumCircuit
 import matplotlib.pyplot as plt
-import networkx as nx
 from dotenv import load_dotenv
 import os
 
@@ -9,15 +8,15 @@ from utils import process_detection_events, build_mwpm_graph, apply_mwpm, inject
 
 load_dotenv()
 API_KEY = os.getenv("IBM_API_KEY")
-SIMULATION = True
-NUM_TRIALS = 10
+SIMULATION = False
+NUM_TRIALS = 1
 stats_history = []
 
 if not SIMULATION: NUM_TRIALS = 1
 
 for trial in range(NUM_TRIALS):
-    grid = 3
-    n_rounds = 2
+    grid = 5
+    n_rounds = 4
 
     if grid % 2 != 1:
         raise ValueError("Grid size must be an odd number")
@@ -42,7 +41,7 @@ for trial in range(NUM_TRIALS):
 
     classical_bits, stabilizer_map = apply_stabilizers(qc, grid, classical_bits, stabilizer_map)
 
-    qc = inject_random_errors(qc, grid, error_prob=0.1)  # After initialization, before stabilizers
+    # qc = inject_random_errors(qc, grid, error_prob=0.1)  # After initialization, before stabilizers
 
     for _ in range(n_rounds - 1):
         classical_bits, stabilizer_map = apply_stabilizers(qc, grid, classical_bits, stabilizer_map)

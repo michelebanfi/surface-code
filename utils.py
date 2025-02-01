@@ -71,45 +71,17 @@ def run_on_ibm(qc):
     service = QiskitRuntimeService()
 
     backend = service.least_busy(operational=True, simulator=False)
-    pm = generate_preset_pass_manager(target=backend.target, optimization_level=1)
-    # Authenticate with your IBM Quantum token
-    # IBMProvider.save_account(API_KEY)  # Only need to do this once
-    # provider = IBMProvider()
-
-    # Get available backends (quantum computers)
-    # print("Available backends:")
-    # for backend in provider.backends():
-    #     print(f"- {backend.name} ({backend.num_qubits} qubits)")
-    #
-    # # Choose a backend - example using ibmq_qasm_simulator for testing
-    # backend = provider.get_backend('ibm_brisbane')  # Replace with actual device name
-    #
-    # # Transpile for the target backend
-    # print(f"Transpiling for {backend.name}...")
-    # transpiled_qc = transpile(qc, backend=backend, optimization_level=3)
-    #
-    # # Submit job
-    # print(f"Submitting job to {backend.name}...")
-    # job = backend.run(transpiled_qc, shots=1024)
-    #
-    # # Monitor job status
-    # print(f"Job ID: {job.job_id()}")
-    # print("Job status:", job.status())
-
-    # Retrieve results when complete
-    # result = job.result()
-    # counts = result.get_counts()
-
+    pm = generate_preset_pass_manager(target=backend.target, optimization_level=0)
     surface_code = pm.run(qc)
 
     with Session(backend=backend) as session:
         sampler = Sampler(mode=session)
         job = sampler.run([surface_code], shots=1024)
-        pub_result = job.result()[0]
+        pub_result = job.result()
         print(f"Sampler job ID: {job.job_id()}")
-        print(f"Counts: {pub_result.data.cr.get_counts()}")
+        print(f"Counts: {pub_result[0].data.c.get_counts()}")
 
-    return pub_result.data.cr.get_counts()
+    return pub_result[0].data.c.get_counts()
 
 def run_on_simulator(qc):
     # Use AerSimulator for simulation
