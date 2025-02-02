@@ -53,20 +53,43 @@ physical_errors = [agg_5['avg_physical_errors'], agg_7['avg_physical_errors'], a
 plt.figure(figsize=(12, 5))
 
 # Plot logical and detected error rates versus grid size.
-plt.subplot(1, 2, 1)
-plt.plot(grid_sizes, logical_error_rates, 'o-', label='Logical Error Rate')
-plt.plot(grid_sizes, detected_error_rates, 's--', label='Detected Error Rate')
+plt.subplot(1, 3, 1)
+# plt.plot(grid_sizes, logical_error_rates, 'o-', label='Logical Error Rate')
+plt.plot(grid_sizes, detected_error_rates, 'o-', label='Detected Error Rate', color='orange')
 plt.xlabel("Grid Size (L x L)")
 plt.ylabel("Error Rate (per shot)")
 plt.title("Error Rates vs. Grid Size")
 plt.legend()
 
 # Plot average physical errors (normalized per shot) versus grid size.
-plt.subplot(1, 2, 2)
+plt.subplot(1, 3, 2)
 plt.plot(grid_sizes, physical_errors, 'd-', color='purple', label='Physical Errors per Shot')
 plt.xlabel("Grid Size (L x L)")
 plt.ylabel("Average Physical Errors per Shot")
 plt.title("Physical Errors vs. Grid Size")
+plt.legend()
+
+print("Logical Error Rates:", logical_error_rates)
+
+# fit a linear model to the logical error rates
+# y = mx + c
+x = np.array(grid_sizes)
+y = np.array(logical_error_rates)
+m, c = np.polyfit(x, y, 1)
+print(f"m: {m}, c: {c}")
+
+# fit a log model to the logical error rates
+# y = a * np.log(x) + b
+a, b = np.polyfit(np.log(x), y, 1)
+print(f"a: {a}, b: {b}")
+
+plt.subplot(1, 3, 3)
+plt.plot(grid_sizes, logical_error_rates, 'o-', label='Logical Error Rate')
+# plt.plot(x, a*np.log(x) + b, 'g--', label=f'Fit: y = {a:.2f}log(x) + {b:.2f}')
+# plt.plot(x, m*x + c, 'r--', label=f'Fit: y = {m:.2f}x + {c:.2f}')
+plt.xlabel("Grid Size (L x L)")
+plt.ylabel("Logical Error Rate (per shot)")
+plt.title("Logical Error Rate vs. Grid Size")
 plt.legend()
 
 plt.tight_layout()
