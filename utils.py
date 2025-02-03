@@ -199,13 +199,6 @@ def calculate_logical_error_subrutine(counts, grid, matching, stabilizer_map, de
 
     return logical_errors / total_shots
 
-def inject_random_errors(qc, grid, error_prob=0.1):
-    """Inject random X errors with given probability"""
-    for q in range(grid**2):
-        if q % 2 == 0 and random() < error_prob:  # Only data qubits (even indices)
-            qc.x(q)
-    return qc
-
 def calculate_error_statistics(G, counts, grid, matching, stabilizer_map, detection_events, logical_z_chain):
     stats = {
         'total_errors': 0,
@@ -270,3 +263,11 @@ def plot_error_stats(stats_history):
     plt.tight_layout()
     plt.savefig("error_stats.png")
     plt.close()
+
+
+def inject_random_errors(qc, grid, error_prob=0.1):
+    """Inject random X errors with given probability"""
+    for q in range(grid**2):
+        if q % 2 == 0 and random() < error_prob:  # Only data qubits (even indices)
+            qc.x(q)
+    return qc
