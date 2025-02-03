@@ -5,8 +5,13 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="8bacb71a-0168-4f9d-a192-30f77c25621a" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/analyze optimized.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/prova/chat.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/prova/claude.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/prova/deepseek.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/prova/michele.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/analyze optimized.py" beforeDir="false" afterPath="$PROJECT_DIR$/analyze optimized.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/distanceManace.py" beforeDir="false" afterPath="$PROJECT_DIR$/distanceManace.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -57,10 +62,14 @@
   <component name="PropertiesComponent"><![CDATA[{
   "keyToString": {
     "Python.IBM-Account.executor": "Run",
-    "Python.analyze optimized.executor": "Run",
+    "Python.analyze optimized.executor": "Debug",
     "Python.analyzer.executor": "Run",
+    "Python.chat.executor": "Run",
+    "Python.claude.executor": "Run",
+    "Python.deepseek.executor": "Run",
     "Python.distance manace.executor": "Run",
     "Python.distanceManace.executor": "Debug",
+    "Python.michele.executor": "Run",
     "Python.mine.executor": "Run",
     "Python.prova.executor": "Run",
     "Python.provaMatch.executor": "Debug",
@@ -116,7 +125,7 @@
       <workItem from="1738511543736" duration="1053000" />
       <workItem from="1738570930851" duration="1202000" />
       <workItem from="1738572540214" duration="9526000" />
-      <workItem from="1738591547576" duration="2474000" />
+      <workItem from="1738591547576" duration="17879000" />
     </task>
     <servers />
   </component>
@@ -127,37 +136,28 @@
     <breakpoint-manager>
       <breakpoints>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
-          <url>file://$PROJECT_DIR$/distanceManace.py</url>
-          <line>23</line>
-          <option name="timeStamp" value="17" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
-          <url>file://$PROJECT_DIR$/distanceManace.py</url>
-          <line>110</line>
-          <option name="timeStamp" value="20" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
-          <url>file://$PROJECT_DIR$/distanceManace.py</url>
-          <line>114</line>
-          <option name="timeStamp" value="21" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
           <url>file://$PROJECT_DIR$/retrieveManace.py</url>
           <line>9</line>
           <option name="timeStamp" value="24" />
         </line-breakpoint>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
           <url>file://$PROJECT_DIR$/analyze optimized.py</url>
-          <line>21</line>
-          <option name="timeStamp" value="28" />
+          <line>103</line>
+          <option name="timeStamp" value="42" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
+          <url>file://$PROJECT_DIR$/analyze optimized.py</url>
+          <line>187</line>
+          <option name="timeStamp" value="48" />
         </line-breakpoint>
       </breakpoints>
     </breakpoint-manager>
   </component>
   <component name="com.intellij.coverage.CoverageDataManagerImpl">
+    <SUITE FILE_PATH="coverage/surface_code$chat.coverage" NAME="chat Coverage Results" MODIFIED="1738604034136" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/prova" />
     <SUITE FILE_PATH="coverage/surface_code$results.coverage" NAME="results Coverage Results" MODIFIED="1738409466607" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
     <SUITE FILE_PATH="coverage/surface_code$analyzer.coverage" NAME="analyzer Coverage Results" MODIFIED="1738577128994" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
-    <SUITE FILE_PATH="coverage/surface_code$analyze_optimized.coverage" NAME="analyze optimized Coverage Results" MODIFIED="1738594483845" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
+    <SUITE FILE_PATH="coverage/surface_code$analyze_optimized.coverage" NAME="analyze optimized Coverage Results" MODIFIED="1738604531926" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
     <SUITE FILE_PATH="coverage/surface_code$IBM_Account.coverage" NAME="IBM-Account Coverage Results" MODIFIED="1738407996244" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
     <SUITE FILE_PATH="coverage/surface_code$retrieve_manace.coverage" NAME="retrieve manace Coverage Results" MODIFIED="1738590495997" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
     <SUITE FILE_PATH="coverage/ToricCodes$results.coverage" NAME="results Coverage Results" MODIFIED="1738079020265" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
@@ -167,7 +167,10 @@
     <SUITE FILE_PATH="coverage/ToricCodes$prova.coverage" NAME="prova Coverage Results" MODIFIED="1738081079483" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
     <SUITE FILE_PATH="coverage/surface_code$stats_aggregator.coverage" NAME="stats-aggregator Coverage Results" MODIFIED="1738512673366" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
     <SUITE FILE_PATH="coverage/ToricCodes$utils.coverage" NAME="utils Coverage Results" MODIFIED="1738080598975" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
+    <SUITE FILE_PATH="coverage/surface_code$deepseek.coverage" NAME="deepseek Coverage Results" MODIFIED="1738615645166" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/prova" />
     <SUITE FILE_PATH="coverage/surface_code$retrieveManace.coverage" NAME="retrieveManace Coverage Results" MODIFIED="1738592957316" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
+    <SUITE FILE_PATH="coverage/surface_code$claude.coverage" NAME="claude Coverage Results" MODIFIED="1738607326143" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/prova" />
+    <SUITE FILE_PATH="coverage/surface_code$michele.coverage" NAME="michele Coverage Results" MODIFIED="1738621125993" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/prova" />
     <SUITE FILE_PATH="coverage/ToricCodes$mine.coverage" NAME="mine Coverage Results" MODIFIED="1738085204506" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
     <SUITE FILE_PATH="coverage/surface_code$distance_manace.coverage" NAME="distance manace Coverage Results" MODIFIED="1738582918897" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
     <SUITE FILE_PATH="coverage/surface_code$tempo.coverage" NAME="tempo Coverage Results" MODIFIED="1738411697892" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />

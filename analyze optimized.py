@@ -53,7 +53,7 @@ def build_mwpm_graph(detection_events, distance):
     G = nx.Graph()
     G.add_node('boundary')
 
-    for event in detection_events:
+    for event in tqdm(detection_events):
         row, col, stab_type, t = event
         node_id = f"{row},{col},{t}"
         G.add_node(node_id)
@@ -85,23 +85,21 @@ def build_mwpm_graph(detection_events, distance):
 
     return G
 
-def calculate_logical_error(counts, stabilizer_map, logical_z_chain, distance, corrections):
-    """Calculate logical error rate after applying corrections."""
-    total_shots = sum(counts.values())
+def calculate_logical_error(counts, logical_chain, corrections, initial_state=0):
+    """
+    Calculate logical error rate using parity of corrections along the logical chain.
+    (Assumes you know the initial state or can infer it from stabilizers)
+    """
     logical_errors = 0
+    total_shots = sum(counts.values())
 
     for shot, freq in counts.items():
-        data_bits = list(shot[:len(logical_z_chain)])  # Convert to list for mutation
+        # Infer net corrections along logical chain
+        # This is where physical layout mapping matters!
+        net_flips = sum(corrections.get(q, 0) for q in logical_chain) % 2
 
-        # Apply corrections
-        for q, flip in corrections.items():
-            if flip:
-                data_bits[q] = '1' if data_bits[q] == '0' else '0'
-
-        # Calculate parity after correction
-        parity = sum(int(bit) for bit in data_bits) % 2
-        if parity != 0:
-            logical_errors += freq
+        # Compare to expected parity based on initial state
+        logical_errors += freq * (net_flips != initial_state)
 
     return logical_errors / total_shots
 
@@ -189,22 +187,36 @@ def analyze_results(results):
     error_rates = defaultdict(list)
     results = results[::-1]  # Reverse if necessary
 
-    for result in tqdm(results):
+
+    for result in results:
         d = int(result['distance'])
         counts = result['counts']
+
+        # take only 30 elements counts from dictionary
+        counts = {k: counts[k] for k in list(counts)[:30]}
+
         stabilizer_map = result['stabilizer_map']
         logical_z = result['logical_z']
 
+        print("LOG - Processing detection events")
         detection_events = process_detection_events(counts, d)
+
+        print("LOG - Creating graph")
         G = build_mwpm_graph(detection_events, d)
+
+        print("LOG - Applying MWPM")
         matching, _ = apply_mwpm(G)
 
+        print("LOG - Determining corrections")
         # Determine corrections from matching
         corrections = determine_corrections(matching, detection_events, d)
 
+        print("LOG - Calculating logical error rate")
         # Calculate logical error rate with corrections
-        error_rate = calculate_logical_error(counts, stabilizer_map, logical_z, d, corrections)
+        error_rate = calculate_logical_error(counts, logical_z, corrections)
         error_rates[d].append(error_rate)
+
+        print(f"Distance {d}: {error_rate}")
 
     avg_errors = {d: np.mean(rates) for d, rates in error_rates.items()}
     return avg_errors

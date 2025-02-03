@@ -102,11 +102,6 @@ def build_surface_code_circuit(distance, rounds=4):
     return qc, stabilizer_map, logical_z
 
 
-# =============================================================================
-# Main loop: create circuits for a range of distances, submit jobs within a Qiskit session,
-# and save a results structure for later processing.
-# =============================================================================
-
 # Dictionary to map distance to jobID and a list to store full results.
 job_dict = {}
 results = []
@@ -119,28 +114,6 @@ pm = generate_preset_pass_manager(target=backend.target, optimization_level=0)
 # Open a session; all jobs will run in this session.
 with Session(backend=backend) as session:
     sampler = Sampler(mode=session)
-
-    # Loop over distances; here we use d from 3 to 20 such that the total qubits = 3*(2*d+1) stay under 128.
-    # for d in range(3, 21):
-    #     qc, stabilizer_map, logical_z = build_surface_code_circuit(distance=d, rounds=4)
-    #     # (Optional) Process the circuit with a preset pass manager
-    #     surface_code = pm.run(qc)
-    #     # Submit the job (using 1024 shots, for example)
-    #     job = sampler.run([surface_code], shots=1024)
-    #     result = job.result()
-    #     counts = result[0].data.c.get_counts()
-    #     job_id = job.job_id()
-    #     job_dict[d] = job_id
-    #
-    #     # Structure the results for this circuit.
-    #     result_structure = {
-    #         'distance': d,
-    #         'job_id': job_id,
-    #         'counts': counts,
-    #         'stabilizer_map': stabilizer_map,
-    #         'logical_z': logical_z
-    #     }
-    #     results.append(result_structure)
 
     jobs = []
     for d in range(3, 21):
