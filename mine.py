@@ -88,7 +88,7 @@ for trial in range(NUM_TRIALS):
     stats['counts'] = counts
 
     # save stats under /stats folder with grid size as name. Save them as python objects.
-    with open(f'stats/stats_grid_{grid}.pkl', 'wb') as f:
+    with open(f'stats/boundary/stats_grid_{grid}.pkl', 'wb') as f:
         pickle.dump(stats, f)
 
     # Draw the matching graph
