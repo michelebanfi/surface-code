@@ -34,12 +34,12 @@ def _process_mwpm(syndromes, stabilizer_adj, stabilizer_map, central_qubits, d, 
                 G.add_edge(node, virtual_node, weight=1e9)  # High weight to avoid if possible
 
     # plot the graph
-    plt.figure(figsize=(12, 5), dpi=300)
-    pos = nx.spring_layout(G, k=0.5)
-    nx.draw(G, pos, with_labels=True)
-    labels = nx.get_edge_attributes(G, 'weight')
-    nx.draw_networkx_edge_labels(G, pos, edge_labels=labels)
-    plt.savefig(f"graph_{d}.png")
+    # plt.figure(figsize=(12, 5), dpi=300)
+    # pos = nx.spring_layout(G, k=0.5)
+    # nx.draw(G, pos, with_labels=True)
+    # labels = nx.get_edge_attributes(G, 'weight')
+    # nx.draw_networkx_edge_labels(G, pos, edge_labels=labels)
+    # plt.savefig(f"graph_{d}.png")
 
     # Find minimum weight perfect matching
     matching = nx.algorithms.matching.min_weight_matching(G)
@@ -140,7 +140,7 @@ def analyze_results(results):
         counts = result['counts']
 
         # take only 30 elements counts from dictionary
-        counts = {k: counts[k] for k in list(counts)[:1]}
+        counts = {k: counts[k] for k in list(counts)}
 
         stabilizer_map = result['stabilizer_map']
         logical_z = result['logical_z']
