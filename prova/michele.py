@@ -31,7 +31,7 @@ def _process_mwpm(syndromes, stabilizer_adj, stabilizer_map, central_qubits, d, 
         G.add_node(virtual_node)
         for node in G.nodes():
             if node != virtual_node:
-                G.add_edge(node, virtual_node, weight=1)  # High weight to avoid if possible
+                G.add_edge(node, virtual_node, weight=1e9)  # High weight to avoid if possible
 
     # plot the graph
     plt.figure(figsize=(12, 5), dpi=300)
