@@ -1,4 +1,6 @@
 import pickle
+from itertools import combinations
+import networkx as nx
 
 def calculate_logical_error(rounds_output, stabilizer_indices, stabilizer_map, stabilizer_type, central_qubits, d):
     """
@@ -63,6 +65,138 @@ def calculate_logical_error(rounds_output, stabilizer_indices, stabilizer_map, s
     total_logic = logical_x or logical_z
     return (logical_x, logical_z, total_logic)
 
+
+def _process_mwpm(syndromes, stabilizer_adj, stabilizer_map, central_qubits, d, time_weight, space_weight):
+    """
+    Helper function to perform MWPM for a specific error type.
+    """
+    if len(syndromes) == 0:
+        return False
+
+    # Create graph and add all syndrome nodes
+    G = nx.Graph()
+    for s in syndromes:
+        G.add_node(s)
+
+    # Add time-like and space-like edges
+    for i, (s1, t1) in enumerate(syndromes):
+        for j, (s2, t2) in enumerate(syndromes[i + 1:], i + 1):
+            # Time-like edges (same stabilizer, consecutive rounds)
+            if s1 == s2 and abs(t1 - t2) == 1:
+                G.add_edge((s1, t1), (s2, t2), weight=time_weight)
+            # Space-like edges (adjacent stabilizers, same round)
+            elif t1 == t2 and s2 in stabilizer_adj.get(s1, []):
+                G.add_edge((s1, t1), (s2, t2), weight=space_weight)
+
+    # Virtual node for odd number of syndromes
+    if G.number_of_nodes() % 2 != 0:
+        virtual_node = (-1, -1)
+        G.add_node(virtual_node)
+        for node in G.nodes():
+            if node != virtual_node:
+                G.add_edge(node, virtual_node, weight=1e9)  # High weight to avoid if possible
+
+    # Find minimum weight perfect matching
+    matching = nx.algorithms.matching.min_weight_matching(G)
+
+    # Extract affected data qubits
+    error_qubits = set()
+    for edge in matching:
+        (s1, t1), (s2, t2) = edge
+        if s1 == -1 or s2 == -1:
+            continue  # Ignore virtual node
+
+        # Get shared data qubits for spatial edges
+        if t1 == t2:
+            shared = set(stabilizer_map[s1]) & set(stabilizer_map[s2])
+            error_qubits.update(shared)
+        # Time-like edges affect stabilizer's data qubits
+        else:
+            error_qubits.update(stabilizer_map[s1])
+
+    # Count central column qubits with odd parity
+    central_errors = len(error_qubits & set(central_qubits))
+    return central_errors > d // 2
+
+def build_stabilizer_adjacency(stabilizer_map):
+    """
+    Build adjacency list for stabilizers based on shared data qubits.
+    """
+    adjacency = {}
+    stabilizers = list(stabilizer_map.keys())
+    for s1, s2 in combinations(stabilizers, 2):
+        shared_qubits = set(stabilizer_map[s1]) & set(stabilizer_map[s2])
+        if len(shared_qubits) > 0:
+            adjacency.setdefault(s1, []).append(s2)
+            adjacency.setdefault(s2, []).append(s1)
+    return adjacency
+
+def calculate_logical_error_mwpm(
+        rounds_output,
+        stabilizer_indices,
+        stabilizer_map,
+        stabilizer_type,
+        central_qubits,
+        d,
+        time_weight=1.0,
+        space_weight=1.0
+):
+    """
+    Detect logical errors using MWPM (surface code decoding).
+
+    Args:
+        rounds_output (list of str): Stabilizer measurements ordered oldest to newest.
+        stabilizer_indices (list): Order of stabilizers in the measurement string.
+        stabilizer_map (dict): Maps stabilizer indices to connected data qubits.
+        stabilizer_type (dict): Maps stabilizer indices to 'X' or 'Z'.
+        central_qubits (list): Data qubits in the central column.
+        d (int): Code distance.
+        time_weight (float): Weight for time-like edges.
+        space_weight (float): Weight for space-like edges.
+
+    Returns:
+        tuple: (logical_x_error, logical_z_error)
+    """
+    if len(rounds_output) < 2:
+        return (False, False)
+
+    # Build stabilizer adjacency for spatial edges
+    stabilizer_adj = build_stabilizer_adjacency(stabilizer_map)
+
+    # Extract syndromes (stabilizer, round) for each error type
+    syndromes_x = []
+    syndromes_z = []
+
+    logical_error = 0
+
+    for round_idx in range(len(rounds_output) - 1):
+        current = rounds_output[round_idx]
+        next_r = rounds_output[round_idx + 1]
+
+        for bit_idx in range(len(current)):
+            if current[bit_idx] != next_r[bit_idx]:
+                stabilizer = stabilizer_indices[bit_idx]
+                stype = stabilizer_type.get(stabilizer, None)
+                if stype == 'Z':
+                    syndromes_x.append((stabilizer, round_idx))
+                elif stype == 'X':
+                    syndromes_z.append((stabilizer, round_idx))
+
+        # Process X and Z errors separately
+        logical_x = _process_mwpm(syndromes_x, stabilizer_adj, stabilizer_map, central_qubits, d, time_weight, space_weight)
+        logical_z = _process_mwpm(syndromes_z, stabilizer_adj, stabilizer_map, central_qubits, d, time_weight, space_weight)
+        if logical_x or logical_z:
+            logical_error += 1
+
+        # reset syndromes
+        syndromes_x = []
+        syndromes_z = []
+
+    # print(logical_error)
+
+    return (logical_error / 3)
+
+
 with open('../stats/optimized/recovered_results.pkl', 'rb') as f:
     results = pickle.load(f)
 
@@ -72,10 +206,12 @@ def analyze_results(results):
 
     for result in results:
         d = int(result['distance'])
+        if d%2 == 0:
+            continue
         counts = result['counts']
 
         # take only 30 elements counts from dictionary
-        counts = {k: counts[k] for k in list(counts)[:100]}
+        counts = {k: counts[k] for k in list(counts)}
 
         stabilizer_map = result['stabilizer_map']
         logical_z = result['logical_z']
@@ -102,11 +238,15 @@ def analyze_results(results):
 
             splitted_c = splitted_c[::-1]
 
-            _, _, total_errors = calculate_logical_error(splitted_c, stabilizer_indices, stabilizer_map, stabilizer_type, logical_z, d)
-            if total_errors:
+            # _, _, total_errors = calculate_logical_error(splitted_c, stabilizer_indices, stabilizer_map, stabilizer_type, logical_z, d)
+            # if total_errors:
+            #     total_errors_count += 1
+            logical = calculate_logical_error_mwpm(splitted_c, stabilizer_indices, stabilizer_map, stabilizer_type, logical_z, d)
+
+            if logical:
                 total_errors_count += 1
 
-        print(f"Distance {d}: {total_errors_count / 100}")
+        print(f"Distance {d}: {total_errors_count / 1024}")
 
 
 analyze_results(results)
