@@ -103,6 +103,7 @@ def calculate_logical_error_mwpm(rounds_output, stabilizer_indices, stabilizer_m
     syndromes_x = []
     syndromes_z = []
 
+    physical_errors = 0
     logical_error = 0
 
     for round_idx in range(len(rounds_output) - 1):
@@ -111,6 +112,7 @@ def calculate_logical_error_mwpm(rounds_output, stabilizer_indices, stabilizer_m
 
         for bit_idx in range(len(current)):
             if current[bit_idx] != next_r[bit_idx]:
+                physical_errors += 1
                 stabilizer = stabilizer_indices[bit_idx]
                 stype = stabilizer_type.get(stabilizer, None)
                 if stype == 'Z':
@@ -128,7 +130,7 @@ def calculate_logical_error_mwpm(rounds_output, stabilizer_indices, stabilizer_m
         syndromes_x = []
         syndromes_z = []
 
-    return (logical_error / 3)
+    return (logical_error / 3), (physical_errors / 3)
 
 def analyze_results(results):
     results = results[::-1]  # Reverse if necessary
@@ -167,23 +169,22 @@ def analyze_results(results):
 
             splitted_c = splitted_c[::-1]
 
-            for i in splitted_c:
-                print(i)
-
-            logical = calculate_logical_error_mwpm(splitted_c, stabilizer_indices, stabilizer_map, stabilizer_type, logical_z, d)
+            logical, physical = calculate_logical_error_mwpm(splitted_c, stabilizer_indices, stabilizer_map, stabilizer_type, logical_z, d)
 
             if logical:
                 total_errors_count += 1
 
-        print(f"Distance {d}: {total_errors_count / len(counts)}")
+        print(f"Distance {d} - Logical errors:  {total_errors_count / len(counts)}, Physical errors: {physical / len(counts)}")
         distances.append(d)
         logical_errors.append(total_errors_count / len(counts))
+        physical_errors.append(physical / len(counts))
 
 with open('../stats/optimized/recovered_results.pkl', 'rb') as f:
     results = pickle.load(f)
 
 distances = []
 logical_errors = []
+physical_errors = []
 
 analyze_results(results)
 
@@ -197,3 +198,22 @@ plt.title("Logical Error Rate vs. Code Distance")
 plt.legend()
 plt.savefig("final_result.png")
 
+# plot distances and physical errors
+plt.figure(figsize=(12, 5), dpi=300)
+plt.plot(distances, physical_errors, 'o-', label='Physical Error Rate', color = "orange")
+plt.grid()
+plt.xlabel("Code Distance")
+plt.ylabel("Error Rate (per shot)")
+plt.title("Physical Error Rate vs. Code Distance")
+plt.legend()
+plt.savefig("final_result_physical.png")
+
+plt.figure(figsize=(12, 5), dpi=300)
+plt.plot(distances, logical_errors, 'o-', label='Logical Error Rate')
+plt.plot(distances, physical_errors, 'o-', label='Physical Error Rate', color = "orange")
+plt.grid()
+plt.xlabel("Code Distance")
+plt.ylabel("Error Rate (per shot)")
+plt.title("Error Rate vs. Code Distance")
+plt.legend()
+plt.savefig("final_result_both.png")
