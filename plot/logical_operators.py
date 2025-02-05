@@ -5,7 +5,7 @@ from matplotlib.patches import Rectangle
 fig, ax = plt.subplots(figsize=(8, 8))
 
 # Define grid size (number of stabilizers in each dimension)
-grid_size = 5
+grid_size = 7
 
 # Generate positions for a chessboard pattern
 positions = [(i, j) for i in range(grid_size) for j in range(grid_size)]
@@ -35,6 +35,9 @@ for i in range(grid_size):
                 data_qubits.append((i / 2, j / 2))
 
 
+# remove the stabilizer at coordinates (2.0, 3.5)
+stabilizer_positions.remove((2.0, 2.5))
+
 # Plot colored "+"-shaped regions for stabilizers
 for (i, j) in stabilizer_positions:
     stype = stabilizer_types[(i, j)]
@@ -53,13 +56,42 @@ for (i, j) in stabilizer_positions:
         facecolor=color, alpha=alpha, edgecolor=None, zorder=1
     ))
 
+# plot a red circle in over the data qubits representing the logical operator which is a Z chain
+# first of all identify the data qubits which are in the third column
+logical_operator_z = [(i, j) for i, j in data_qubits if i == 1]
+# then add a red circle over the data qubits, and a red line connecting them
+
+for (x, y) in logical_operator_z:
+    ax.add_patch(plt.Circle((x, y), radius=0.13, color='red', zorder=4))
+    ax.plot([x, x], [y - 0.5, y + 0.5], color='red', lw=6, zorder=4)
+
+# plot a red circle in over the data qubits representing the logical operator which is a Z chain
+# first of all identify the data qubits which are in the third column
+logical_operator_x = [(i, j) for i, j in data_qubits if j == 1]
+# then add a red circle over the data qubits, and a red line connecting them
+
+for (x, y) in logical_operator_x:
+    ax.add_patch(plt.Circle((x, y), radius=0.13, color='blue', zorder=4))
+    ax.plot([x - 0.5, x + 0.5], [y, y], color='blue', lw=6, zorder=4)
+
+logical_hole = [(2.0, 2.0), (1.5, 2.5), (2.0, 3.0), (2.5, 2.5)]
+
+for (x, y) in logical_hole:
+    ax.add_patch(plt.Circle((x, y), radius=0.13, color='purple', zorder=4))
+    if y == 2.5:
+        ax.plot([x, x], [y - 0.5, y + 0.5], color='purple', lw=6, zorder=4)
+    else:
+        ax.plot([x - 0.5, x + 0.5], [y, y], color='purple', lw=6, zorder=4)
+
 # Plot data qubits (white circles)
 for (x, y) in data_qubits:
-    ax.add_patch(plt.Circle((x, y), radius=0.1, color='white', ec='black', lw=2, zorder=2))
+    ax.add_patch(plt.Circle((x, y), radius=0.1, color='white', ec='black', lw=2, zorder=5))
+
 
 # Plot stabilizers (black circles)
 for (i, j) in stabilizer_positions:
     ax.add_patch(plt.Circle((i, j), radius=0.1, color='black', zorder=3))
+
 
 # Adjust axis limits and appearance
 ax.set_xlim(-0.5, grid_size / 2)
@@ -68,4 +100,4 @@ ax.set_ylim(-0.5, grid_size / 2)
 ax.set_aspect('equal')
 plt.axis('off')
 
-plt.savefig("surface_code_plot.png", dpi=300) #bbox_inches="tight"
+plt.savefig("surface_code_plot_logical_operator.png", dpi=300) #bbox_inches="tight"
