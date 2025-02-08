@@ -5,11 +5,8 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="8bacb71a-0168-4f9d-a192-30f77c25621a" name="Changes" comment="">
+      <change afterPath="$PROJECT_DIR$/plot/qubit.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/circuit.png" beforeDir="false" afterPath="$PROJECT_DIR$/circuit.png" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/error_stats.png" beforeDir="false" afterPath="$PROJECT_DIR$/error_stats.png" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/mine.py" beforeDir="false" afterPath="$PROJECT_DIR$/mine.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/prova/michele.py" beforeDir="false" afterPath="$PROJECT_DIR$/prova/michele.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -72,6 +69,7 @@
     "Python.mine.executor": "Run",
     "Python.prova.executor": "Run",
     "Python.provaMatch.executor": "Debug",
+    "Python.qubit.executor": "Run",
     "Python.results.executor": "Run",
     "Python.retrieve manace.executor": "Run",
     "Python.retrieveManace.executor": "Run",
@@ -131,7 +129,8 @@
       <workItem from="1738652733719" duration="5362000" />
       <workItem from="1738670103993" duration="1912000" />
       <workItem from="1738739475898" duration="7288000" />
-      <workItem from="1738752227172" duration="3339000" />
+      <workItem from="1738752227172" duration="3588000" />
+      <workItem from="1739008227108" duration="666000" />
     </task>
     <servers />
   </component>
@@ -169,6 +168,7 @@
     <SUITE FILE_PATH="coverage/surface_code$results.coverage" NAME="results Coverage Results" MODIFIED="1738409466607" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
     <SUITE FILE_PATH="coverage/surface_code$retrieve_manace.coverage" NAME="retrieve manace Coverage Results" MODIFIED="1738590495997" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
     <SUITE FILE_PATH="coverage/ToricCodes$provaMatch.coverage" NAME="provaMatch Coverage Results" MODIFIED="1738086841765" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
+    <SUITE FILE_PATH="coverage/surface_code$qubit.coverage" NAME="qubit Coverage Results" MODIFIED="1739009708536" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/plot" />
     <SUITE FILE_PATH="coverage/surface_code$mine.coverage" NAME="mine Coverage Results" MODIFIED="1738755641125" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
     <SUITE FILE_PATH="coverage/surface_code$stats_aggregator.coverage" NAME="stats-aggregator Coverage Results" MODIFIED="1738512673366" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
     <SUITE FILE_PATH="coverage/surface_code$single_stabilizer.coverage" NAME="single_stabilizer Coverage Results" MODIFIED="1738742103156" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/plot" />
