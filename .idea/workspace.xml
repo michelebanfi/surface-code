@@ -5,9 +5,9 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="8bacb71a-0168-4f9d-a192-30f77c25621a" name="Changes" comment="">
+      <change afterPath="$PROJECT_DIR$/IBMstats.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/plot/logical_operators.py" beforeDir="false" afterPath="$PROJECT_DIR$/plot/logical_operators.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/plot/surface_code_plot_logical_operator.png" beforeDir="false" afterPath="$PROJECT_DIR$/plot/surface_code_plot_logical_operator.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/prova/michele.py" beforeDir="false" afterPath="$PROJECT_DIR$/prova/michele.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -58,6 +58,7 @@
   <component name="PropertiesComponent"><![CDATA[{
   "keyToString": {
     "Python.IBM-Account.executor": "Run",
+    "Python.IBMstats.executor": "Run",
     "Python.analyze optimized.executor": "Debug",
     "Python.analyzer.executor": "Run",
     "Python.chat.executor": "Run",
@@ -131,7 +132,7 @@
       <workItem from="1738670103993" duration="1912000" />
       <workItem from="1738739475898" duration="7288000" />
       <workItem from="1738752227172" duration="3588000" />
-      <workItem from="1739008227108" duration="2603000" />
+      <workItem from="1739008227108" duration="5824000" />
     </task>
     <servers />
   </component>
@@ -178,7 +179,8 @@
     <SUITE FILE_PATH="coverage/ToricCodes$results.coverage" NAME="results Coverage Results" MODIFIED="1738079020265" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
     <SUITE FILE_PATH="coverage/surface_code$prova.coverage" NAME="prova Coverage Results" MODIFIED="1738353710612" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
     <SUITE FILE_PATH="coverage/ToricCodes$prova.coverage" NAME="prova Coverage Results" MODIFIED="1738081079483" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
-    <SUITE FILE_PATH="coverage/surface_code$logical_operators.coverage" NAME="logical_operators Coverage Results" MODIFIED="1739012577783" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/plot" />
+    <SUITE FILE_PATH="coverage/surface_code$logical_operators.coverage" NAME="logical_operators Coverage Results" MODIFIED="1739012687805" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/plot" />
+    <SUITE FILE_PATH="coverage/surface_code$IBMstats.coverage" NAME="IBMstats Coverage Results" MODIFIED="1739032327488" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
     <SUITE FILE_PATH="coverage/surface_code$claude.coverage" NAME="claude Coverage Results" MODIFIED="1738607326143" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/prova" />
     <SUITE FILE_PATH="coverage/surface_code$surface_code_plot.coverage" NAME="surface code plot Coverage Results" MODIFIED="1738750739921" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/plot" />
     <SUITE FILE_PATH="coverage/ToricCodes$mine.coverage" NAME="mine Coverage Results" MODIFIED="1738085204506" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />

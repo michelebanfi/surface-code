@@ -169,7 +169,7 @@ def analyze_results(results):
 
             splitted_c = splitted_c[::-1]
 
-            logical, physical = calculate_logical_error_mwpm(splitted_c, stabilizer_indices, stabilizer_map, stabilizer_type, logical_z, d)
+            logical, physical = calculate_logical_error_mwpm(splitted_c, stabilizer_indices, stabilizer_map, stabilizer_type, logical_z, d, time_weight=3.514132443661577, space_weight=6.758792810989775)
 
             if logical:
                 total_errors_count += 1
